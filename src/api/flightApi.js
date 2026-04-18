@@ -21,25 +21,31 @@ export const fetchGlobalAirportsList = async () => {
  * Fetch real commercial flight schedules using AviationStack
  */
 export const fetchFlightSchedules = async (originIata, destinationIata) => {
-    // Use the securely stored env var only
-    const apiKey = import.meta.env.VITE_AVIATIONSTACK_KEY;
-
-    if (!apiKey) {
-        console.error("No API key configured. Check your .env file.");
-        return [];
-    }
-
-    // Note: Free tier AviationStack ONLY supports HTTP data.
-    // Because Vercel deploys an HTTPS website, we use a secure CORS proxy wrapper so browsers don't block the request!
-    const aviationEndpoint = `http://api.aviationstack.com/v1/flights?access_key=${apiKey}&dep_iata=${originIata}&arr_iata=${destinationIata}`;
-    const url = `https://api.allorigins.win/raw?url=${encodeURIComponent(aviationEndpoint)}`;
+    let responseData;
 
     try {
-        const response = await axios.get(url);
-        if (!response.data || !response.data.data) return [];
+        // If doing local development with Vite, we can fetch HTTP directly because localhost natively allows Mixed Content!
+        if (import.meta.env.DEV) {
+            const apiKey = import.meta.env.VITE_AVIATIONSTACK_KEY;
+            if (!apiKey) {
+                console.error("No API key configured. Check your .env file.");
+                return [];
+            }
+            const url = `http://api.aviationstack.com/v1/flights?access_key=${apiKey}&dep_iata=${originIata}&arr_iata=${destinationIata}`;
+            const response = await axios.get(url);
+            responseData = response.data;
+        } else {
+            // In Production (Vercel HTTPS), browser blocks the HTTP API!
+            // To Bypass this, we call our Custom Vercel Serverless Backend Function!
+            const url = `/api/flights?dep=${originIata}&arr=${destinationIata}`;
+            const response = await axios.get(url);
+            responseData = response.data;
+        }
+
+        if (!responseData || !responseData.data) return [];
 
         // Map AviationStack format to our existing UI format
-        return response.data.data.map(flight => {
+        return responseData.data.map(flight => {
             const formatTime = (timeString) => {
                 if (!timeString) return 'N/A';
                 const d = new Date(timeString);
