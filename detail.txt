@@ -8,7 +8,7 @@ In your code editor, open the
  file located at the very root of your Flight_Tracker folder.
 You will see this line:
 env
-VITE_AVIATIONSTACK_KEY=78ec915ed4be71a26ecdc6b6b9694bca
+VITE_AVIATIONSTACK_KEY= {your api key}
 Simply replace that string with your new API key!
 Method 2: Directly in the API Code
 
@@ -22,6 +22,6 @@ fetchFlightSchedules
  function.
 You will see it structured like this as a fallback:
 javascript
-const apiKey = import.meta.env.VITE_AVIATIONSTACK_KEY || '78ec915ed4be71a26ecdc6b6b9694bca';
+const apiKey = import.meta.env.VITE_AVIATIONSTACK_KEY || 'your api key';
 Just delete the old key inside the quotation marks and paste your new one there.
 Once you replace it in either spot, completely restart your Vite terminal server (npm run dev) just to make sure it loads the new key, and you'll be back fully functional again!
