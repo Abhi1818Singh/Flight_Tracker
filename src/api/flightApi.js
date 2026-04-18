@@ -29,8 +29,10 @@ export const fetchFlightSchedules = async (originIata, destinationIata) => {
         return [];
     }
 
-    // Note: Free tier AviationStack only supports HTTP
-    const url = `http://api.aviationstack.com/v1/flights?access_key=${apiKey}&dep_iata=${originIata}&arr_iata=${destinationIata}`;
+    // Note: Free tier AviationStack ONLY supports HTTP data.
+    // Because Vercel deploys an HTTPS website, we use a secure CORS proxy wrapper so browsers don't block the request!
+    const aviationEndpoint = `http://api.aviationstack.com/v1/flights?access_key=${apiKey}&dep_iata=${originIata}&arr_iata=${destinationIata}`;
+    const url = `https://api.allorigins.win/raw?url=${encodeURIComponent(aviationEndpoint)}`;
 
     try {
         const response = await axios.get(url);
