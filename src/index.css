@@ -1,0 +1,146 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --bg-color: #080A12;
+  --panel-bg: rgba(16, 22, 36, 0.7);
+  --panel-border: rgba(255, 255, 255, 0.08);
+  --text-main: #f0f4f8;
+  --text-muted: #8b9bb4;
+  --accent-color: #0ea5e9;
+  --accent-glow: rgba(14, 165, 233, 0.4);
+  --primary-gradient: linear-gradient(135deg, #0ea5e9, #6366f1);
+  --error-color: #ef4444;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Outfit', sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-main);
+  overflow: hidden;
+  /* App takes exactly 100vh, no scroll */
+  -webkit-font-smoothing: antialiased;
+  background-image:
+    radial-gradient(circle at 10% 40%, rgba(14, 165, 233, 0.06), transparent 30%),
+    radial-gradient(circle at 90% 20%, rgba(99, 102, 241, 0.06), transparent 30%);
+}
+
+#root {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Glassmorphism Utilities */
+.glass-panel {
+  background: var(--panel-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--panel-border);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+/* Modern Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Animations */
+.fade-in {
+  animation: fadeIn 0.4s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse-glow {
+  0% {
+    box-shadow: 0 0 0 0 var(--accent-glow);
+  }
+
+  70% {
+    box-shadow: 0 0 10px 6px transparent;
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 transparent;
+  }
+}
+
+/* Map specific overrides */
+.leaflet-container {
+  font-family: 'Outfit', sans-serif !important;
+  background-color: #121622 !important;
+  width: 100%;
+  height: 100%;
+}
+
+.dark-map-tiles {
+  filter: grayscale(100%) invert(100%) hue-rotate(180deg) contrast(90%) brightness(100%);
+}
+
+/* Custom Marker Styling */
+.plane-icon {
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+  transition: transform 0.3s ease;
+}
+
+.plane-popup .leaflet-popup-content-wrapper {
+  background: var(--panel-bg);
+  backdrop-filter: blur(12px);
+  color: var(--text-main);
+  border: 1px solid var(--panel-border);
+  border-radius: 12px;
+  padding: 4px;
+}
+
+.plane-popup .leaflet-popup-tip {
+  background: var(--panel-bg);
+}
+
+/* Custom map polylines for routes */
+.animated-route {
+  stroke-dasharray: 10, 15;
+  animation: marchDash 30s linear infinite;
+  filter: drop-shadow(0 0 4px #10b981);
+}
+
+@keyframes marchDash {
+  from {
+    stroke-dashoffset: 1000;
+  }
+
+  to {
+    stroke-dashoffset: 0;
+  }
+}
