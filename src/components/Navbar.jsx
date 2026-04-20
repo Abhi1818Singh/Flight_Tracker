@@ -18,7 +18,7 @@ export default function Navbar({ session, onLoginClick }) {
                     <Plane size={24} color="white" />
                 </div>
                 <div>
-                    <h1 style={{ fontSize: '1.25rem', fontWeight: '600', margin: 0 }}>AeroTrack Pro</h1>
+                    <h1 style={{ fontSize: '1.25rem', fontWeight: '600', margin: 0 }}>AeroTrack</h1>
                     <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', margin: 0 }}>Global Route Scheduler</p>
                 </div>
             </div>
