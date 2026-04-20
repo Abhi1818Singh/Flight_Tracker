@@ -45,6 +45,7 @@ export default function FlightMap({ routeDetails }) {
             maxBounds={maxBounds}
             maxBoundsViscosity={1.0}
             zoomControl={false}
+            attributionControl={false}
             style={{ width: '100%', height: '100%' }}
         >
             <TileLayer
