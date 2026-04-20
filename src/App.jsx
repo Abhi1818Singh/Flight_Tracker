@@ -1,12 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import FlightMap from './components/FlightMap';
 import Sidebar from './components/Sidebar';
-import { Plane } from 'lucide-react';
+import HubPanel from './components/HubPanel';
+import Navbar from './components/Navbar';
+import Footer from './components/Footer';
+import AuthModal from './components/AuthModal';
+import { supabase } from './api/supabaseClient';
 
 function App() {
-  // We now only care about the isolated flight route path.
-  // routeCoordinates structure: { origin: {...}, destination: {...}, path: [[lat, lon], [lat, lon]] }
   const [routeCoordinates, setRouteCoordinates] = useState(null);
+  const [session, setSession] = useState(null);
+  const [showAuthModal, setShowAuthModal] = useState(false);
+
+  useEffect(() => {
+    if (!supabase) return;
+
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   return (
     <div style={{ position: 'relative', width: '100vw', height: '100vh', overflow: 'hidden' }}>
@@ -14,23 +34,21 @@ function App() {
         <FlightMap routeDetails={routeCoordinates} />
       </div>
 
-      <header className="glass-panel fade-in" style={{
-        position: 'absolute', top: '24px', left: '24px', zIndex: 10,
-        padding: '16px 24px', display: 'flex', alignItems: 'center', gap: '12px',
-        maxWidth: '350px'
-      }}>
-        <div style={{ background: 'var(--primary-gradient)', padding: '10px', borderRadius: '12px' }}>
-          <Plane size={24} color="white" />
-        </div>
-        <div>
-          <h1 style={{ fontSize: '1.25rem', fontWeight: '600', margin: 0 }}>AeroTrack Pro</h1>
-          <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', margin: 0 }}>Global Route Scheduler</p>
-        </div>
-      </header>
+      <Navbar session={session} onLoginClick={() => setShowAuthModal(true)} />
 
-      <div style={{ position: 'absolute', top: '120px', left: '24px', zIndex: 10, width: '380px' }}>
-        <Sidebar setRouteCoordinates={setRouteCoordinates} />
+      {/* Flight Search Layout Component (Fixed Left Architecture) */}
+      <div style={{ position: 'absolute', top: '110px', left: '24px', bottom: '80px', zIndex: 10, width: '420px', display: 'flex', flexDirection: 'column' }}>
+        <Sidebar setRouteCoordinates={setRouteCoordinates} session={session} />
       </div>
+
+      {/* Personalized Hub Layout Component (Shrink-Wrapping Right Architecture) */}
+      <div style={{ position: 'absolute', top: '110px', right: '24px', zIndex: 10, width: '300px', maxHeight: 'calc(100vh - 190px)', display: 'flex', flexDirection: 'column' }}>
+        <HubPanel setRouteCoordinates={setRouteCoordinates} session={session} />
+      </div>
+
+      <Footer />
+
+      {showAuthModal && <AuthModal onClose={() => setShowAuthModal(false)} />}
     </div>
   );
 }
