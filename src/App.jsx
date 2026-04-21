@@ -29,21 +29,22 @@ function App() {
   }, []);
 
   return (
-    <div style={{ position: 'relative', width: '100vw', height: '100vh', overflow: 'hidden' }}>
+    <div className="app-container">
       <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: 0 }}>
         <FlightMap routeDetails={routeCoordinates} />
       </div>
 
       <Navbar session={session} onLoginClick={() => setShowAuthModal(true)} />
 
-      {/* Flight Search Layout Component (Fixed Left Architecture) */}
-      <div style={{ position: 'absolute', top: '110px', left: '24px', bottom: '80px', zIndex: 10, width: '420px', display: 'flex', flexDirection: 'column' }}>
-        <Sidebar setRouteCoordinates={setRouteCoordinates} session={session} />
-      </div>
+      {/* Responsive Panels Engine replacing static absolute wrappers */}
+      <div className="panels-wrapper">
+        <div className="left-panel">
+          <Sidebar setRouteCoordinates={setRouteCoordinates} session={session} />
+        </div>
 
-      {/* Personalized Hub Layout Component (Shrink-Wrapping Right Architecture) */}
-      <div style={{ position: 'absolute', top: '110px', right: '24px', zIndex: 10, width: '300px', maxHeight: 'calc(100vh - 190px)', display: 'flex', flexDirection: 'column' }}>
-        <HubPanel setRouteCoordinates={setRouteCoordinates} session={session} />
+        <div className="right-panel">
+          <HubPanel setRouteCoordinates={setRouteCoordinates} session={session} />
+        </div>
       </div>
 
       <Footer />
